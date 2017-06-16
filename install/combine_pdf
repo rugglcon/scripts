@@ -1,0 +1,10 @@
+#!/bin/bash
+
+list=""
+
+for count in $@
+do	
+	list="$list$count "
+done
+
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$list
