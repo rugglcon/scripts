@@ -40,7 +40,7 @@ get_args() {
 	while getopts ":b:h" opt; do
 		case $opt in
 			b)
-				if [ $bin_set -eq 0 ]; then
+				if [[ $bin_set -eq 0 ]]; then
 					binset=1
 					bindir=$OPTARG
 					printf "%s\n" "install location: $OPTARG"
