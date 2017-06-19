@@ -17,6 +17,8 @@ path_check() {
 	fi
 }
 
+# this function copies all the scripts over to the 
+# set bindir
 install() {
 	mkdir -p $bindir
 
@@ -34,22 +36,29 @@ usage() {
 }
 
 get_args() {
+	bin_set=0
 	while getopts ":b:h" opt; do
 		case $opt in
 			b)
-				bindir=$OPTARG
-				printf "%s\n" "install location: $OPTARG" >&2
+				if [bin_set -eq 0]; then
+					binset=1
+					bindir=$OPTARG
+					printf "%s\n" "install location: $OPTARG"
+				else
+					printf "%s\n" "'-b' provided too many times. Run with '-h' for help"
+					exit 1
+				fi
 				;;
 			h)
 				usage
 				exit 0
 				;;
 			\?)
-				printf "%s\n" "Invalid option: -$OPTARG. Run with '-h' for help"
+				printf "%s\n" "Invalid option: $OPTARG. Run with '-h' for help"
 				exit 1
 				;;
 			:)
-				printf "%s\n" "-$OPTARG must be run with a directory name. Run with '-h' for help"
+				printf "%s\n" "$OPTARG must be run with a directory name. Run with '-h' for help"
 				exit 1
 				;;
 		esac
@@ -62,8 +71,9 @@ main() {
 
 	# we've gotten this far, go ahead and copy scripts
 	install
-	#source ~/.profile
+	source ~/.profile
 	printf "done.\n"
+	exit 0
 }
 
 main "$@"
