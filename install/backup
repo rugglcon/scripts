@@ -30,8 +30,7 @@ make_dir() {
 				break
 				;;
 			[Nn])
-				printf "%s\n" "Please create destination dir and try again."
-				exit 1
+				error_trig "Please create destination dir and try again."
 				;;
 			*)
 				printf "%s\n" "Please enter [Yy] or [Nn]"
@@ -46,8 +45,7 @@ check_dirs() {
 			make_dir "$2"
 		fi
 	else
-		printf "%s\n" "Error: $1 doesn't exist."
-		exit 1
+		error_trig "Error: $1 doesn't exist."
 	fi
 }
 
@@ -78,9 +76,7 @@ usage() {
 
 get_args() {
 	if [[ $# -gt 2 ]]; then
-		printf "%s\n" "Wrong number of arguments"
-		usage
-		exit 1
+		error_trig "Wrong number of arguments. Run with '-h' for help"
 	elif [[ $# -eq 1 && "$1" == "-h" ]]; then
 		usage
 		exit 1
@@ -89,9 +85,7 @@ get_args() {
 	elif [[ $# -eq 0 ]]; then
 		do_backup_wo_args
 	else
-		printf "%s\n" "Wrong number of arguments"
-		usage
-		exit 1
+		error_trig "Wrong number of arguments. Run with '-h' for help"
 	fi
 }
 
