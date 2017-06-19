@@ -1,29 +1,41 @@
 #!/bin/bash
 
 # uncomment for debug
-# set -x
+#set -x
 
-if [ $# -gt 2 ]
-then
-	printf "Wrong number of arguments\n"
-	printf "Usage:\n"
-	printf "    backup SRC DEST\n"
-	printf "or  backup\n"
-	exit 1
-fi
+do_backup_with_args() {
+	printf "Running backup...\n"
+	rsync -uvrp $1 $2
+}
 
-printf "Running backup...\n"
-
-if [ $# -eq 2 ]
-then
-	rsync -vrp $1 $2
-fi
-
-if [ $# -eq 0 ]
-then
+do_backup_wo_args() {
 	read -p 'Source: ' src
 	read -p 'Destination: ' dest
-	rsync -vrp $src $dest
-fi
+	printf "Running backup...\n"
+	rsync -uvrp $src $dest
+}
+
+usage() {
+	printf "Usage: backup [OPTIONS]\n"
+	printf "Examples:
+	printf "          backup SRC DEST\n"
+	printf "or        backup\n"
+	printf "\n-h        Print this help.\n"
+}
+
+get_args() {
+	if [ $# -gt 2 ]; then
+		printf "Wrong number of arguments\n"
+		usage
+		exit 1
+	elif [ $# -eq 2 ]; then
+		do_backup_with_args $1 $2
+	elif [ $# -eq 0 ]; then
+		do_backup_wo_args
+	elif [ $# -eq 1 && $1 == "-h" ]; then
+		usage
+		exit 1
+	fi
+}
 
 printf "\nSuccess!\n"
