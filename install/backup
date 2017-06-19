@@ -3,16 +3,56 @@
 # uncomment for debug
 #set -x
 
-do_backup_with_args() {
+backup() {
 	printf "Running backup...\n"
-	rsync -uvrp $1 $2
+	rsync -uvrp "$1" "$2"
+}
+
+make_dir() {
+	while true; do
+		read -p "$1 doesn't exist, create it? [Y/n] " yn
+		case $yn in
+			[Yy])
+				mkdir -p "$1"
+				break
+				;;
+			[Nn])
+				printf "%s\n" "Please create destination dir and try again."
+				exit 1
+				;;
+			*)
+				printf "%s\n" "Please enter [Yy] or [Nn]"
+				;;
+		esac
+	done
+}
+
+check_dirs() {
+	if [[ -e "$1" ]]; then
+		if [[ ! -e "$2" ]]; then
+			make_dir "$2"
+		fi
+	else
+		printf "%s\n" "Error: $1 doesn't exist."
+		exit 1
+	fi
+}
+
+do_backup_with_args() {	
+	check_dirs "$1" "$2"
+	
+	# no errors at this point, do backup
+	backup "$1" "$2"
 }
 
 do_backup_wo_args() {
 	read -p 'Source: ' src
 	read -p 'Destination: ' dest
-	printf "Running backup...\n"
-	rsync -uvrp $src $dest
+	
+	check_dirs $src $dest
+	
+	# no errors at this point, do backup
+	backup "$src" "$dest"
 }
 
 usage() {
@@ -24,15 +64,15 @@ usage() {
 }
 
 get_args() {
-	if [ $# -gt 2 ]; then
+	if [[ $# -gt 2 ]]; then
 		printf "Wrong number of arguments\n"
 		usage
 		exit 1
-	elif [ $# -eq 2 ]; then
-		do_backup_with_args $1 $2
-	elif [ $# -eq 0 ]; then
+	elif [[ $# -eq 2 ]]; then
+		do_backup_with_args "$1" "$2"
+	elif [[ $# -eq 0 ]]; then
 		do_backup_wo_args
-	elif [ $# -eq 1 && $1 == "-h" ]; then
+	elif [[ $# -eq 1 && "$1" == "-h" ]]; then
 		usage
 		exit 1
 	fi
