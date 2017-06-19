@@ -5,26 +5,32 @@
 
 # default bindir. can be set with -b
 bindir="$HOME/bin"
+path_add=1
 
-# this function checks the PATH to make sure it contains
-# the $bindir or not
+error_trig() {
+	printf "%s\n" "$1" 1>&2
+	exit 1
+}
+
 path_check() {
 	if [[ ! ":$PATH:" == *":$bindir:"* ]]; then
 		printf "%s\n" "adding $bindir to PATH..."
 		printf "export PATH=$PATH:$bindir\n" >> ~/.profile
+		path_add=0
 	else
 		printf "%s\n" "$bindir already exists in PATH"
 	fi
 }
 
-# this function copies all the scripts over to the 
-# set bindir
 install() {
 	mkdir -p $bindir
 
 	printf "%s\n" "installing scripts..."
 	cp install/* $bindir
-	source ~/.profile
+	
+	if [[ $path_add -eq 0 ]]; then
+		source ~/.profile
+	fi
 }
 
 usage() {
@@ -46,8 +52,7 @@ get_args() {
 					bindir=$OPTARG
 					printf "%s\n" "install location: $OPTARG"
 				else
-					printf "%s\n" "'-b' provided too many times. Run with '-h' for help"
-					exit 1
+					error_trig "'-b' provided too many times. Run with '-h' for help"
 				fi
 				;;
 			h)
@@ -55,12 +60,10 @@ get_args() {
 				exit 0
 				;;
 			\?)
-				printf "%s\n" "Invalid option: $OPTARG. Run with '-h' for help"
-				exit 1
+				error_trig "Invalid option: $OPTARG. Run with '-h' for help"
 				;;
 			:)
-				printf "%s\n" "$OPTARG must be run with a directory name. Run with '-h' for help"
-				exit 1
+				error_trig "$OPTARG must be run with a directory name. Run with '-h' for help"
 				;;
 		esac
 	done
@@ -74,7 +77,6 @@ main() {
 	install
 	
 	printf "done.\n"
-	exit 0
 }
 
 main "$@"
