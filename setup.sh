@@ -32,8 +32,8 @@ usage() {
 	printf "%s\n" "Examples: ./setup.sh -b $HOME/bin"
 	printf "%s\n" "          ./setup.sh"
 	printf "%s\n" "Options:"
-	printf "%s\n" "-b '/path/to/bin/dir'  Directory scripts should be installed to. Default is '$HOME/bin'."
-	printf "%s\n" "-h                     Print this help."
+	printf "%s\n" "-b '/path/to/bin'  Install dir. Default is '$HOME/bin'."
+	printf "%s\n" "-h                 Print this help."
 }
 
 get_args() {
@@ -42,7 +42,7 @@ get_args() {
 		case $opt in
 			b)
 				if [[ $bin_set -eq 0 ]]; then
-					binset=1
+					bin_set=1
 					bindir=$OPTARG
 					printf "%s\n" "install location: $OPTARG"
 				else

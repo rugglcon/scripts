@@ -4,7 +4,7 @@
 #set -x
 
 backup() {
-	printf "Running backup...\n"
+	printf "%s\n" "Running backup..."
 	rsync -uvrp "$1" "$2"
 }
 
@@ -56,26 +56,40 @@ do_backup_wo_args() {
 }
 
 usage() {
-	printf "Usage: backup [OPTIONS]\n"
-	printf "Examples:
-	printf "          backup SRC DEST\n"
-	printf "or        backup\n"
-	printf "\n-h        Print this help.\n"
+	printf "%s\n" "Usage: backup [OPTIONS]"
+	printf "%s\n" "Examples:"
+	printf "%s\n" "          backup SRC DEST"
+	printf "%s\n" "or        backup"
+	printf "%s\n" "-h        Print this help."
 }
 
 get_args() {
 	if [[ $# -gt 2 ]]; then
-		printf "Wrong number of arguments\n"
+		printf "%s\n" "Wrong number of arguments"
 		usage
 		exit 1
-	elif [[ $# -eq 2 ]]; then
+	fi
+
+	if [[ $# -eq 2 ]]; then
 		do_backup_with_args "$1" "$2"
 	elif [[ $# -eq 0 ]]; then
 		do_backup_wo_args
-	elif [[ $# -eq 1 && "$1" == "-h" ]]; then
+	fi
+
+	if [[ $# -eq 1 && "$1" == "-h" ]]; then
+		usage
+		exit 1
+	else
+		printf "%s\n" "Wrong number of arguments"
 		usage
 		exit 1
 	fi
 }
 
-printf "\nSuccess!\n"
+main() {
+	get_args "$@"
+	
+	printf "\n%s\n" "Success!"
+}
+
+main "$@"
