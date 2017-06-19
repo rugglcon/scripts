@@ -3,8 +3,10 @@
 # uncomment for debug
 #set -x
 
-# can be added to with subsequent '-o' at runtime
+# can be added to by editing this file
 SYNC_OPTS="-urpq"
+
+# can be changed with '-e' option
 ERR_FILE="backup_errs.log"
 
 error_trig() {
@@ -68,10 +70,11 @@ do_backup_wo_args() {
 
 usage() {
 	printf "%s\n" "Usage: backup [OPTIONS] [SRC DEST]"
-	printf "%s\n" "Examples:     backup $HOME/bin /tmp/backup"
-	printf "%s\n" "              backup"
+	printf "%s\n" "Examples:         backup $HOME/bin /tmp/backup"
+	printf "%s\n" "                  backup"
 	printf "%s\n" "Options:"
-	printf "%s\n" "-h            Print this help."
+	printf "%s\n" "-h                Print this help."
+	printf "%s\n" "-e err_file.txt   Output errors to the provided file."
 }
 
 get_args() {
