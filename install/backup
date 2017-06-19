@@ -9,6 +9,12 @@ SYNC_OPTS="-urpq"
 # can be changed with '-e' option
 ERR_FILE="backup_errs.log"
 
+# src location
+SRC=""
+
+# dest location
+DEST=""
+
 error_trig() {
 	printf "%s\n" "$1" 1>&2
 	exit 1
@@ -16,7 +22,7 @@ error_trig() {
 
 backup() {
 	printf "%s\n" "Running backup..."
-	rsync $SYNC_OPTS "$1" "$2" 2> $ERR_FILE 
+	rsync $SYNC_OPTS "$SRC" "$DEST" 2> $ERR_FILE 
 	if [[ ! "$?" = "0" ]]; then
 		# something went wrong
 		error_trig "Error occurred while backing up. Check messages in $ERR_FILE"
@@ -25,10 +31,10 @@ backup() {
 
 make_dir() {
 	while true; do
-		read -p "$1 doesn't exist, create it? [Y/n] " yn
+		read -p "$DEST doesn't exist, create it? [Y/n] " yn
 		case $yn in
 			[Yy])
-				mkdir -p "$1"
+				mkdir -p "$DEST"
 				break
 				;;
 			[Nn])
@@ -42,37 +48,33 @@ make_dir() {
 }
 
 check_dirs() {
-	if [[ -e "$1" ]]; then
-		if [[ ! -e "$2" ]]; then
-			make_dir "$2"
+	if [[ -e "$SRC" ]]; then
+		if [[ ! -e "$DEST" ]]; then
+			make_dir "$DEST"
 		fi
 	else
-		error_trig "Error: $1 doesn't exist."
+		error_trig "Error: $SRC doesn't exist."
 	fi
 }
 
 do_backup_with_args() {	
-	check_dirs "$1" "$2"
-	
-	# no errors at this point, do backup
-	backup "$1" "$2"
+	check_dirs
 }
 
 do_backup_wo_args() {
-	read -p 'Source: ' src
-	read -p 'Destination: ' dest
+	read -p 'Source: ' SRC
+	read -p 'Destination: ' DEST
 	
-	check_dirs $src $dest
-	
-	# no errors at this point, do backup
-	backup "$src" "$dest"
+	check_dirs
 }
 
 usage() {
-	printf "%s\n" "Usage: backup [OPTIONS] [SRC DEST]"
-	printf "%s\n" "Examples:         backup $HOME/bin /tmp/backup"
+	printf "%s\n" "Usage: backup [OPTIONS]"
+	printf "%s\n" "Examples:         backup -e err_file.txt -v"
 	printf "%s\n" "                  backup"
 	printf "%s\n" "Options:"
+	printf "%s\n" "-s, --src                     Source directory."
+	printf "%s\n" "-d, --dest                    Destination directory."
 	printf "%s\n" "-h, --help                    Print this help."
 	printf "%s\n" "-e, --err_file err_file.txt   Output errors to the provided file."
 	printf "%s\n" "-v, --verbose                 Turns on verbose logging."
@@ -95,6 +97,14 @@ get_args() {
 				-v | --verbose)
 					SYNC_OPTS="-urpv"
 					;;
+				-s | --src)
+					shift
+					SRC="$1"
+					;;
+				-d | --dest)
+					shift
+					DEST="$1"
+					;;
 			esac
 			shift
 		done
@@ -103,6 +113,15 @@ get_args() {
 
 main() {
 	get_args "$@"
+	
+	if [[ "$SRC" = "" || "$DEST" = "" ]]; then
+		do_backup_wo_args
+	else
+		do_backup_with_args
+	fi
+	
+	# no errors at this point, do backup
+	backup
 
 	printf "\n%s\n" "Success!"
 }
