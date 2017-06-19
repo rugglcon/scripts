@@ -24,6 +24,7 @@ install() {
 
 	printf "%s\n" "installing scripts..."
 	cp install/* $bindir
+	source ~/.profile
 }
 
 usage() {
@@ -71,7 +72,7 @@ main() {
 
 	# we've gotten this far, go ahead and copy scripts
 	install
-	source ~/.profile
+	
 	printf "done.\n"
 	exit 0
 }
