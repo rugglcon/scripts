@@ -73,22 +73,31 @@ usage() {
 	printf "%s\n" "Examples:         backup $HOME/bin /tmp/backup"
 	printf "%s\n" "                  backup"
 	printf "%s\n" "Options:"
-	printf "%s\n" "-h                Print this help."
-	printf "%s\n" "-e err_file.txt   Output errors to the provided file."
+	printf "%s\n" "-h, --help                    Print this help."
+	printf "%s\n" "-e, --err_file err_file.txt   Output errors to the provided file."
+	printf "%s\n" "-v, --verbose                 Turns on verbose logging."
 }
 
 get_args() {
-	if [[ $# -gt 2 ]]; then
-		error_trig "Wrong number of arguments. Run with '-h' for help"
-	elif [[ $# -eq 1 && "$1" == "-h" ]]; then
-		usage
-		exit 1
-	elif [[ $# -eq 2 ]]; then
-		do_backup_with_args "$1" "$2"
-	elif [[ $# -eq 0 ]]; then
+	if [[ $# -eq 0 ]]; then
 		do_backup_wo_args
 	else
-		error_trig "Wrong number of arguments. Run with '-h' for help"
+		while [[ "$1" != "" ]]; do
+			case "$1" in
+				-h | --help)
+					usage
+					exit
+					;;
+				-e | --err_file)
+					shift
+					ERR_FILE="$1"
+					;;
+				-v | --verbose)
+					SYNC_OPTS="-urpv"
+					;;
+			esac
+			shift
+		done
 	fi
 }
 
