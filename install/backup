@@ -3,9 +3,22 @@
 # uncomment for debug
 #set -x
 
+# can be added to with subsequent '-o' at runtime
+SYNC_OPTS="-urpq"
+ERR_FILE="backup_errs.log"
+
+error_trig() {
+	printf "%s\n" "$1" 1>&2
+	exit 1
+}
+
 backup() {
 	printf "%s\n" "Running backup..."
-	rsync -uvrp "$1" "$2"
+	rsync $SYNC_OPTS "$1" "$2" 2> $ERR_FILE 
+	if [[ ! "$?" = "0" ]]; then
+		# something went wrong
+		error_trig "Error occurred while backing up. Check messages in $ERR_FILE"
+	fi
 }
 
 make_dir() {
@@ -56,11 +69,11 @@ do_backup_wo_args() {
 }
 
 usage() {
-	printf "%s\n" "Usage: backup [OPTIONS]"
-	printf "%s\n" "Examples:"
-	printf "%s\n" "          backup SRC DEST"
-	printf "%s\n" "or        backup"
-	printf "%s\n" "-h        Print this help."
+	printf "%s\n" "Usage: backup [OPTIONS] [SRC DEST]"
+	printf "%s\n" "Examples:     backup $HOME/bin /tmp/backup"
+	printf "%s\n" "              backup"
+	printf "%s\n" "Options:"
+	printf "%s\n" "-h            Print this help."
 }
 
 get_args() {
@@ -68,17 +81,13 @@ get_args() {
 		printf "%s\n" "Wrong number of arguments"
 		usage
 		exit 1
-	fi
-
-	if [[ $# -eq 2 ]]; then
+	elif [[ $# -eq 1 && "$1" == "-h" ]]; then
+		usage
+		exit 1
+	elif [[ $# -eq 2 ]]; then
 		do_backup_with_args "$1" "$2"
 	elif [[ $# -eq 0 ]]; then
 		do_backup_wo_args
-	fi
-
-	if [[ $# -eq 1 && "$1" == "-h" ]]; then
-		usage
-		exit 1
 	else
 		printf "%s\n" "Wrong number of arguments"
 		usage
@@ -88,7 +97,7 @@ get_args() {
 
 main() {
 	get_args "$@"
-	
+
 	printf "\n%s\n" "Success!"
 }
 
