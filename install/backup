@@ -48,6 +48,9 @@ make_dir() {
 }
 
 check_dirs() {
+	DEST="${DEST/#\~/$HOME}"
+	SRC="${SRC/#\~/$HOME}"
+
 	if [[ -e "$SRC" ]]; then
 		if [[ ! -e "$DEST" ]]; then
 			make_dir "$DEST"
@@ -65,8 +68,7 @@ do_backup_wo_args() {
 	printf "\n%s\n\n" "No options provided; entering interactive mode..."
 	read -e -p 'Source: ' SRC
 	read -e -p 'Destination: ' DEST
-	error_trig $SRC
-	
+
 	check_dirs
 }
 
