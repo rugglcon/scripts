@@ -88,8 +88,8 @@ usage() {
 	printf "%s\n" "Examples:         backup -e err_file.txt -v"
 	printf "%s\n" "                  backup"
 	printf "%s\n" "Options:"
-	printf "%s\n" "-s, --src                     Source directory."
-	printf "%s\n" "-d, --dest                    Destination directory."
+	printf "%s\n" "-s, --src /src/dir            Source directory."
+	printf "%s\n" "-d, --dest /dest/dir          Destination directory."
 	printf "%s\n" "-h, --help                    Print this help."
 	printf "%s\n" "-e, --err_file err_file.txt   Output errors to the provided file."
 	printf "%s\n" "-v, --verbose                 Turns on verbose logging."
@@ -141,7 +141,7 @@ main() {
 	# cleanup
 	cleanup
 
-	printf "\n%s\n" "Success!"
+	printf "\n%s\n" "done."
 }
 
 main "$@"
