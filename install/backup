@@ -65,7 +65,7 @@ do_backup_with_args() {
 }
 
 do_backup_wo_args() {
-	printf "\n%s\n\n" "No options provided; entering interactive mode..."
+	printf "\n%s\n\n" "No dirs provided; entering interactive mode..."
 	read -e -p 'Source: ' SRC
 	read -e -p 'Destination: ' DEST
 
