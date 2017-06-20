@@ -1,10 +1,10 @@
 # scripts
 
-Personal scripts that can be put into a new installs' `$HOME/bin` folder
+Personal scripts that can be put into a new installs' `$HOME/bin` folder, or whatever folder you choose with the `-b` option (`$HOME/bin` is default).
 
 ## Installation
 
-To install on a new system, clone this repo then run `./setup.sh`.
+To install on a new system, clone this repo then run `./setup.sh`. For help, use the `-h` option.
 
 ## Purpose
 
