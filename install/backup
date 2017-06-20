@@ -53,7 +53,7 @@ check_dirs() {
 			make_dir "$DEST"
 		fi
 	else
-		error_trig "Error: $SRC doesn't exist."
+		error_trig "backup: cannot stat '$SRC': No such file or directory"
 	fi
 }
 
@@ -62,8 +62,9 @@ do_backup_with_args() {
 }
 
 do_backup_wo_args() {
-	read -p 'Source: ' SRC
-	read -p 'Destination: ' DEST
+	printf "\n%s\n\n" "No options provided; entering interactive mode..."
+	read -e -p 'Source: ' SRC
+	read -e -p 'Destination: ' DEST
 	
 	check_dirs
 }
