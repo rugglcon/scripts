@@ -68,6 +68,12 @@ do_backup_wo_args() {
 	check_dirs
 }
 
+cleanup() {
+	if [[ -f $ERR_FILE ]]; then
+		rm $ERR_FILE
+	fi
+}
+
 usage() {
 	printf "%s\n" "Usage: backup [OPTIONS]"
 	printf "%s\n" "Examples:         backup -e err_file.txt -v"
@@ -95,7 +101,7 @@ get_args() {
 					ERR_FILE="$1"
 					;;
 				-v | --verbose)
-					SYNC_OPTS="-urpv"
+					SYNC_OPTS=$(echo "$SYNC_OPTS" | sed -r 's/q/v/g')
 					;;
 				-s | --src)
 					shift
@@ -122,6 +128,9 @@ main() {
 	
 	# no errors at this point, do backup
 	backup
+
+	# cleanup
+	cleanup
 
 	printf "\n%s\n" "Success!"
 }
