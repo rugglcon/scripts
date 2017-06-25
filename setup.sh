@@ -38,7 +38,7 @@ usage() {
 	printf "%s\n" "Examples: ./setup.sh -b $HOME/bin"
 	printf "%s\n" "          ./setup.sh"
 	printf "%s\n" "Options:"
-	printf "%s\n" "-b '/path/to/bin'  Install dir. Default is '$HOME/bin'."
+	printf "%s\n" "-b /path/to/bin    Install dir. Default is $HOME/bin."
 	printf "%s\n" "-h                 Print this help."
 }
 
