@@ -2,6 +2,10 @@
 
 Personal scripts that can be put into a new installs' `$HOME/bin` folder, or whatever folder you choose with the `-b` option (`$HOME/bin` is default).
 
+# Deprecated
+
+This repo has been deprecated in favor of moving everything into [one repo](https://github.com/rugglcon/dotfiles).
+
 ## Installation
 
 To install on a new system, clone this repo then run `./setup.sh`. For help, use the `-h` option.
